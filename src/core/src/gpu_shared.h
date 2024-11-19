@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 #    include <glm/gtx/compatibility.hpp>
 #    include <glm/gtx/type_aligned.hpp>
+#    include <algorithm>
 
 typedef uint32_t uint;
 

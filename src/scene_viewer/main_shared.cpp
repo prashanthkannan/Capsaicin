@@ -22,6 +22,8 @@ THE SOFTWARE.
 
 #define _USE_MATH_DEFINES
 #include "main_shared.h"
+#include "imnodes.cpp"
+
 
 #include <CLI/CLI.hpp>
 #include <chrono>
@@ -105,6 +107,7 @@ CapsaicinMain::CapsaicinMain(string_view &&programNameIn) noexcept
 CapsaicinMain::~CapsaicinMain() noexcept
 {
     // Destroy Capsaicin context
+    ImNodes::DestroyContext();
     gfxImGuiTerminate();
     Capsaicin::Terminate();
 
@@ -458,6 +461,7 @@ bool CapsaicinMain::initialise() noexcept
     }
 
     // Create Capsaicin render context
+    ImNodes::CreateContext();
     Capsaicin::Initialize(contextGFX, ImGui::GetCurrentContext());
 
     // Initialise render settings
@@ -1021,15 +1025,85 @@ bool CapsaicinMain::renderFrame() noexcept
     return true;
 }
 
+
+
 bool CapsaicinMain::renderGUI() noexcept
 {
     // Show the GUI
-    ImGui::SetNextWindowPos(ImVec2(10, 10));
+    //ImGui::SetNextWindowPos(ImVec2(10, 10));
+    //Editor is here - Prashanth
+      
+   /* ImGui::Begin(
+        "node editor", nullptr, ImGuiWindowFlags_NoSavedSettings);
+    
+        ImNodes::BeginNodeEditor();
+
+            //Node begins here
+            ImNodes::BeginNode(1);
+                ImNodes::BeginOutputAttribute(2);
+                    ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(11, 109, 191, 255));
+                    ImGui::Text("Delta Lights");
+                    ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(81, 148, 204, 255));
+                ImNodes::EndOutputAttribute();
+            ImNodes::EndNode();
+            //Node Ends here
+
+            ImNodes::BeginNode(7);
+            ImNodes::BeginOutputAttribute(8);
+            ImGui::Text("Area Lights");
+            ImNodes::EndOutputAttribute();
+            ImNodes::EndNode();
+
+            ImNodes::BeginNode(9);
+            ImNodes::BeginOutputAttribute(10);
+            ImGui::Text("Environmental Lights");
+            ImNodes::EndOutputAttribute();
+            ImNodes::EndNode();
+
+
+            // Enable Lights
+            ImNodes::BeginNode(2);
+            
+                ImGui::TextColored(
+                   ImVec4(1, 0, 0, 1), "Enable Lights"); // Setting color to red and making it bold
+                // or simply make the text bold without specifying a color
+
+                ImNodes::BeginInputAttribute(3);
+                    ImGui::Text("Light 1");
+                ImNodes::EndInputAttribute();
+
+                ImNodes::BeginInputAttribute(4);
+                    ImGui::Text("Light 2");
+                ImNodes::EndInputAttribute();
+
+                ImNodes::BeginInputAttribute(5);
+                    ImGui::Text("Light 3");
+                ImNodes::EndInputAttribute();
+
+                ImNodes::BeginOutputAttribute(6);
+                    ImGui::Text("Light(s) Output");
+                ImNodes::EndOutputAttribute();
+
+            ImNodes::EndNode();
+ 
+            
+            ImNodes::Link(11, 2, 3); // Link from Enable Lights to Light 1
+            ImNodes::Link(12, 8, 4); // Link from Area Lights to Light 2
+            ImNodes::Link(13, 10, 5); // Link from Environmental Lights to Light 3
+
+        ImNodes::EndNodeEditor();
+
+    ImGui::End(); */
+
+ 
+   
     ImGui::Begin(
         programName.data(), nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings);
     {
+        
         if (!benchmarkMode)
         {
+            
             // Select which scene to display
             int32_t selectedScene = static_cast<int32_t>(currentScene);
             string  sceneList;
@@ -1038,6 +1112,13 @@ bool CapsaicinMain::renderGUI() noexcept
                 sceneList += i.name;
                 sceneList += '\0';
             }
+            
+            // Show the GUI
+            
+            //Editor is here - Prashanth
+            
+            
+            
             if (ImGui::Combo("Scene", &selectedScene, sceneList.c_str(), static_cast<int32_t>(scenes.size())))
             {
                 if (currentScene != static_cast<Scene>(selectedScene))
@@ -1374,8 +1455,69 @@ bool CapsaicinMain::renderGUIDetails() noexcept
                 }
             }
         }
-        Capsaicin::RenderGUI(false);
+        
+        
         ImGui::Separator();
+        
+        ImGui::SetNextWindowPos(ImVec2(10, 10));
+        ImGui::Begin("node editor", nullptr, ImGuiWindowFlags_NoSavedSettings);
+
+        ImNodes::BeginNodeEditor();
+
+        // Node begins here
+        ImNodes::BeginNode(1);
+        ImNodes::BeginOutputAttribute(2);
+        ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(11, 109, 191, 255));
+        ImGui::Text("Delta Lights");
+        ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(81, 148, 204, 255));
+        ImNodes::EndOutputAttribute();
+        ImNodes::EndNode();
+        // Node Ends here
+
+        ImNodes::BeginNode(7);
+        ImNodes::BeginOutputAttribute(8);
+        ImGui::Text("Area Lights");
+        ImNodes::EndOutputAttribute();
+        ImNodes::EndNode();
+
+        ImNodes::BeginNode(9);
+        ImNodes::BeginOutputAttribute(10);
+        ImGui::Text("Environmental Lights");
+        ImNodes::EndOutputAttribute();
+        ImNodes::EndNode();
+
+        // Enable Lights
+        ImNodes::BeginNode(2);
+
+        ImGui::TextColored(ImVec4(1, 0, 0, 1), "Enable Lights"); // Setting color to red and making it bold
+        // or simply make the text bold without specifying a color
+
+        ImNodes::BeginInputAttribute(3);
+        ImGui::Text("Light 1");
+        ImNodes::EndInputAttribute();
+
+        ImNodes::BeginInputAttribute(4);
+        ImGui::Text("Light 2");
+        ImNodes::EndInputAttribute();
+
+        ImNodes::BeginInputAttribute(5);
+        ImGui::Text("Light 3");
+        ImNodes::EndInputAttribute();
+
+        ImNodes::BeginOutputAttribute(6);
+        ImGui::Text("Light(s) Output");
+        ImNodes::EndOutputAttribute();
+
+        ImNodes::EndNode();
+
+        ImNodes::Link(11, 2, 3);  // Link from Enable Lights to Light 1
+        ImNodes::Link(12, 8, 4);  // Link from Area Lights to Light 2
+        ImNodes::Link(13, 10, 5); // Link from Environmental Lights to Light 3
+
+        ImNodes::EndNodeEditor();
+
+        ImGui::End();
+        Capsaicin::RenderGUI(false);
     }
 
     // Display debugging options

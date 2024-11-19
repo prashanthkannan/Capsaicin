@@ -27,6 +27,8 @@ THE SOFTWARE.
 #include <glm/glm.hpp>
 #include <string_view>
 
+
+
 class CapsaicinMain
 {
 public:
@@ -182,4 +184,7 @@ protected:
     bool reDisableRender   = false; /**< Use to render only a single frame at a time */
 
     bool hasConsole = false; /**< Set if a console output terminal is attached */
+
+    bool is_area = true;
+
 };
